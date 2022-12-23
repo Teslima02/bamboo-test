@@ -8,6 +8,9 @@
 import Config
 
 config :bamboo,
+  stock_provider_api: "https://www.alphavantage.co/"
+
+config :bamboo,
   ecto_repos: [Bamboo.Repo]
 
 # Configures the endpoint
