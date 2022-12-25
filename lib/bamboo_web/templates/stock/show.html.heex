@@ -1,0 +1,33 @@
+<h1>Show Stock</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @stock.name %>
+  </li>
+
+  <li>
+    <strong>Symbol:</strong>
+    <%= @stock.symbol %>
+  </li>
+
+  <li>
+    <strong>Currency:</strong>
+    <%= @stock.currency %>
+  </li>
+
+  <li>
+    <strong>Country:</strong>
+    <%= @stock.country %>
+  </li>
+
+  <li>
+    <strong>Address:</strong>
+    <%= @stock.address %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.stock_path(@conn, :edit, @stock) %></span> |
+<span><%= link "Back", to: Routes.stock_path(@conn, :index) %></span>

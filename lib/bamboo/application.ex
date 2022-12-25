@@ -15,9 +15,10 @@ defmodule Bamboo.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Bamboo.PubSub},
       # Start the Endpoint (http/https)
-      BambooWeb.Endpoint
+      BambooWeb.Endpoint,
       # Start a worker by calling: Bamboo.Worker.start_link(arg)
       # {Bamboo.Worker, arg}
+      Bamboo.Event.Stock
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

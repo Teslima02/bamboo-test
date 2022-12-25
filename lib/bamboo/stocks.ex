@@ -3,8 +3,6 @@ defmodule Bamboo.Stocks do
   The Stocks context.
   """
 
-  defp stock_provider_api, do: Application.get_env(:bamboo, :stock_provider_api)
-
   import Ecto.Query, warn: false
   alias Bamboo.Repo
 
@@ -201,7 +199,4 @@ defmodule Bamboo.Stocks do
     Stock.changeset(stock, attrs)
   end
 
-  def get_new_list_stocks do
-    Repo.all(Stock) |> Repo.preload(:category)
-  end
 end
