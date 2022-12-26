@@ -7,6 +7,14 @@
 # General application configuration
 import Config
 
+config :bamboo, Bamboo.Mailer,
+  adapter: Bamboo.LocalAdapter,
+  # api_key: "my_api_key",
+  hackney_opts: [
+    recv_timeout: :timer.minutes(1),
+    connect_timeout: :timer.minutes(1)
+  ]
+
 config :bamboo,
   ecto_repos: [Bamboo.Repo]
 

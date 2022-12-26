@@ -7,6 +7,7 @@ defmodule Bamboo.Stocks do
   alias Bamboo.Repo
 
   alias Bamboo.Stocks.Category
+  alias Bamboo.Email.{Email, Mailer}
 
   @doc """
   Returns the list of categories.
@@ -199,4 +200,8 @@ defmodule Bamboo.Stocks do
     Stock.changeset(stock, attrs)
   end
 
+  def send_welcome_email do
+    Email.welcome_email()   # Create your email
+    |> Mailer.deliver_now!() # Send your email
+  end
 end

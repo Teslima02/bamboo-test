@@ -19,7 +19,8 @@ defmodule Bamboo.MixProject do
   def application do
     [
       mod: {Bamboo.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools],
+      applications: [:bamboo]
     ]
   end
 
@@ -50,7 +51,7 @@ defmodule Bamboo.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
-      # {:httpoison, "~> 1.8"}
+      {:bamboo, "~> 1.1"}
     ]
   end
 
