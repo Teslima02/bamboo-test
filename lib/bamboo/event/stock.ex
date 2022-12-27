@@ -1,7 +1,6 @@
 defmodule Bamboo.Event.Stock do
   alias BambooWeb.StockController
-  alias Bamboo.Stocks.Stock
-  alias Bamboo.Repo
+  alias Bamboo.Stocks
 
   use GenServer
 
@@ -36,17 +35,14 @@ defmodule Bamboo.Event.Stock do
   end
 
   defp schedule_stock_provider do
-    Process.send_after(self(), :check_provider, :timer.hours(2))
-    # Process.send_after(self(), :check_provider, :timer.minutes(1))
+    # Process.send_after(self(), :check_provider, :timer.hours(2))
+    Process.send_after(self(), :check_provider, :timer.minutes(1))
     # Process.send_after(self(), :check_provider, :timer.seconds(2))
   end
 
   defp new_stocks(msg) do
     Enum.each(msg, fn(stock) -> {
-      %Stock{}
-      |> Stock.changeset(stock)
-      |> Ecto.Changeset.put_assoc(:category, stock.category)
-      |> Repo.insert()
+      Stocks.create_stock(stock.category, stock)
     } end)
   end
 end

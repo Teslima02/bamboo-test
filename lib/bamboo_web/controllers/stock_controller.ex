@@ -64,7 +64,7 @@ defmodule BambooWeb.StockController do
   def unique_name, do: "user#{System.unique_integer()}"
 
   def get_new_listed_stocks() do
-    range = 1..2
+    range = 1..5
     listed_stocks = Enum.map(range, fn(_) -> %{
       name: unique_name(),
       symbol: "TD",

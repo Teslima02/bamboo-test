@@ -7,7 +7,9 @@ defmodule Bamboo.Stocks do
   alias Bamboo.Repo
 
   alias Bamboo.Stocks.Category
-  alias Bamboo.Email.{Email, Mailer}
+  alias Bamboo.Accounts.User
+  alias Bamboo.Email.Email
+  alias Bamboo.Mailer
 
   @doc """
   Returns the list of categories.
@@ -151,6 +153,8 @@ defmodule Bamboo.Stocks do
     |> Stock.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:category, category)
     |> Repo.insert()
+    |> elem(1)
+    |> get_users_by_stock_category()
   end
 
   @doc """
@@ -200,8 +204,18 @@ defmodule Bamboo.Stocks do
     Stock.changeset(stock, attrs)
   end
 
-  def send_welcome_email do
-    Email.welcome_email()   # Create your email
-    |> Mailer.deliver_now!() # Send your email
+  def get_users_by_stock_category(stock) do
+    query = from u in User, join: c in assoc(u, :category), where: c.id == ^stock.category_id
+
+    Repo.all(query)
+    |> send_new_listed_stock_email(stock)
+  end
+
+  def send_new_listed_stock_email(users, stock) do
+    Enum.each(users, fn user ->
+
+      Email.new_listed_stocks(user, stock)
+      |> Mailer.deliver!()
+    end)
   end
 end

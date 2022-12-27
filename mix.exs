@@ -5,7 +5,7 @@ defmodule Bamboo.MixProject do
     [
       app: :bamboo,
       version: "0.1.0",
-      elixir: "~> 1.12",
+      elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -19,8 +19,7 @@ defmodule Bamboo.MixProject do
   def application do
     [
       mod: {Bamboo.Application, []},
-      extra_applications: [:logger, :runtime_tools],
-      applications: [:bamboo]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -50,8 +49,7 @@ defmodule Bamboo.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:tesla, "~> 1.4"},
-      {:hackney, "~> 1.17"},
-      {:bamboo, "~> 1.1"}
+      {:hackney, "~> 1.17"}
     ]
   end
 

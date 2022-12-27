@@ -13,7 +13,7 @@ alias Bamboo.Stocks
 alias Bamboo.Accounts
 
 defmodule BambooSeed do
-  def multiply_seeder() do
+  def multiple_seeder() do
     create_category()
     create_user()
     user_subscribe_to_category()
@@ -100,4 +100,4 @@ defmodule BambooSeed do
   end
 end
 
-BambooSeed.multiply_seeder()
+BambooSeed.multiple_seeder()
