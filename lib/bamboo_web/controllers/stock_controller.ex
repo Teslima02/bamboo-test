@@ -5,9 +5,39 @@ defmodule BambooWeb.StockController do
   alias Bamboo.Stocks.Stock
 
   @new_list_topic "new_listed_stocks"
+  def index(conn, %{"filter_by" => filter_by} = _params) do
+    case filter_by do
+      "new" ->
+        stocks = Stocks.list_stocks(filter_by)
+        render(conn, "index.html", stocks: stocks)
+
+      "old" ->
+        stocks = Stocks.list_stocks(filter_by)
+        render(conn, "index.html", stocks: stocks)
+
+      _ ->
+        stocks = Stocks.list_stocks("all")
+        render(conn, "index.html", stocks: stocks)
+    end
+  end
+
   def index(conn, _params) do
-    stocks = Stocks.list_stocks()
+    stocks = Stocks.list_stocks("all")
     render(conn, "index.html", stocks: stocks)
+  end
+
+  def search_stock(conn, params) do
+    stocks = Stocks.search_stock(params)
+    render(conn, "index.html", stocks: stocks)
+  end
+
+  def get_listed_stocks(conn, _params) do
+    get_new_listed_stocks()
+
+    conn
+    |> put_flash(:info, "Request successful.")
+
+    render(conn, "index.html")
   end
 
   def new(conn, _params) do
@@ -65,14 +95,18 @@ defmodule BambooWeb.StockController do
 
   def get_new_listed_stocks() do
     range = 1..5
-    listed_stocks = Enum.map(range, fn(_) -> %{
-      name: unique_name(),
-      symbol: "TD",
-      currency: "USD",
-      country: "US",
-      address: "New York",
-      category: Enum.random(Stocks.list_categories())
-    } end)
+
+    listed_stocks =
+      Enum.map(range, fn _ ->
+        %{
+          name: unique_name(),
+          symbol: "TD",
+          currency: "USD",
+          country: "US",
+          address: "New York",
+          category: Enum.random(Stocks.list_categories())
+        }
+      end)
 
     Phoenix.PubSub.broadcast(Bamboo.PubSub, @new_list_topic, listed_stocks)
     listed_stocks

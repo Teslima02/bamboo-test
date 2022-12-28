@@ -116,8 +116,25 @@ defmodule Bamboo.Stocks do
       [%Stock{}, ...]
 
   """
-  def list_stocks do
+  def list_stocks("all") do
     Repo.all(Stock) |> Repo.preload(:category)
+  end
+
+  def list_stocks("new") do
+    # query = from s in Stock, where: s.inserted_at < from_now(2, "week")
+    query = from s in Stock, where: s.inserted_at >= ago(2, "week")
+    Repo.all(query) |> Repo.preload(:category)
+  end
+
+  def list_stocks("old") do
+    query = from s in Stock, where: s.inserted_at >= ago(3, "week")
+    Repo.all(query) |> Repo.preload(:category)
+  end
+
+  def search_stock(%{"name_search" => name_search} = _params) do
+    IO.inspect name_search
+    query = from s in Stock, where: like(s.name, ^"%#{name_search}")
+    Repo.all(query) |> Repo.preload(:category)
   end
 
   @doc """
@@ -208,14 +225,16 @@ defmodule Bamboo.Stocks do
     query = from u in User, join: c in assoc(u, :category), where: c.id == ^stock.category_id
 
     users = Repo.all(query)
-    # BambooWeb.Endpoint.broadcast("stock:new_listed_stocks", stock.category.name, %{stock_name: stock.name, })
+
+    # publish notification to subscribe users about new listed stocks
     BambooWeb.Endpoint.broadcast("stock:new_listed_stocks", stock.category.name, stock)
+
+    # send email notification to subscribe users about new listed stocks
     send_new_listed_stock_email(users, stock)
   end
 
   def send_new_listed_stock_email(users, stock) do
     Enum.each(users, fn user ->
-
       Email.new_listed_stocks(user, stock)
       |> Mailer.deliver!()
     end)

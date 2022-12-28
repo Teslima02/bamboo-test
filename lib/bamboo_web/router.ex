@@ -21,6 +21,9 @@ defmodule BambooWeb.Router do
 
     resources "/stocks", StockController
     resources "/users", UserController
+    get "/stocks?filter_by=all", StockController, :index
+    get "/search_stock", StockController, :search_stock
+    get "/get_listed_stocks", StockController, :get_listed_stocks
   end
 
   # Other scopes may use custom stacks.
