@@ -207,8 +207,10 @@ defmodule Bamboo.Stocks do
   def get_users_by_stock_category(stock) do
     query = from u in User, join: c in assoc(u, :category), where: c.id == ^stock.category_id
 
-    Repo.all(query)
-    |> send_new_listed_stock_email(stock)
+    users = Repo.all(query)
+    # BambooWeb.Endpoint.broadcast("stock:new_listed_stocks", stock.category.name, %{stock_name: stock.name, })
+    BambooWeb.Endpoint.broadcast("stock:new_listed_stocks", stock.category.name, stock)
+    send_new_listed_stock_email(users, stock)
   end
 
   def send_new_listed_stock_email(users, stock) do

@@ -35,8 +35,8 @@ defmodule Bamboo.Event.Stock do
   end
 
   defp schedule_stock_provider do
-    # Process.send_after(self(), :check_provider, :timer.hours(2))
-    Process.send_after(self(), :check_provider, :timer.minutes(1))
+    Process.send_after(self(), :check_provider, :timer.hours(1))
+    # Process.send_after(self(), :check_provider, :timer.minutes(1))
     # Process.send_after(self(), :check_provider, :timer.seconds(2))
   end
 

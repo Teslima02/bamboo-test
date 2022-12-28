@@ -2,6 +2,7 @@ defmodule Bamboo.Stocks.Stock do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:id, :address, :country, :currency, :name, :symbol]}
   schema "stocks" do
     field :address, :string
     field :country, :string

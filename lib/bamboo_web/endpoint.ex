@@ -10,9 +10,9 @@ defmodule BambooWeb.Endpoint do
     signing_salt: "QPxBEw6S"
   ]
 
-  socket "/socket", BambooWeb.StockSocket, websocket: true, longpoll: false
-
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+
+  socket "/socket", BambooWeb.UserSocket, websocket: true, longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
