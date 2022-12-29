@@ -2,12 +2,8 @@ defmodule BambooWeb.StockChannel do
   use BambooWeb, :channel
 
   @impl true
-  def join("stock:new_listed_stocks", payload, socket) do
-    if authorized?(payload) do
-      {:ok, socket}
-    else
-      {:error, %{reason: "unauthorized"}}
-    end
+  def join("stock:new_listed_stocks", _payload, socket) do
+    {:ok, socket}
   end
 
   # Channels can be used in a request/response fashion
@@ -28,7 +24,7 @@ defmodule BambooWeb.StockChannel do
   intercept ["shout"]
   @impl true
   def handle_out("shout", payload, socket) do
-    push(socket, "shout", Map.merge(payload, %{fun_fact: "Do you love me? if yes please work"}))
+    push(socket, "shout", payload)
 
     {:noreply, socket}
   end
@@ -38,10 +34,5 @@ defmodule BambooWeb.StockChannel do
     push(socket, event, payload)
 
     {:noreply, socket}
-  end
-
-  # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
   end
 end

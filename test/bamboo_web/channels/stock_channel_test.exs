@@ -1,5 +1,6 @@
 defmodule BambooWeb.StockChannelTest do
   use BambooWeb.ChannelCase
+  import Bamboo.StocksFixtures
 
   setup do
     {:ok, _, socket} =
@@ -10,18 +11,9 @@ defmodule BambooWeb.StockChannelTest do
     %{socket: socket}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push(socket, "ping", %{"hello" => "there"})
-    assert_reply ref, :ok, %{"hello" => "there"}
-  end
-
-  test "shout broadcasts to stock:lobby", %{socket: socket} do
-    push(socket, "shout", %{"hello" => "all"})
-    assert_broadcast "shout", %{"hello" => "all"}
-  end
-
-  test "broadcasts are pushed to the client", %{socket: socket} do
-    broadcast_from!(socket, "broadcast", %{"some" => "data"})
-    assert_push "broadcast", %{"some" => "data"}
+  test "broadcasts new listed stocks", %{socket: socket} do
+    stock = stock_fixture()
+    broadcast_from!(socket, "finance", stock)
+    assert_push "finance", ^stock
   end
 end
