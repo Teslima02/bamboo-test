@@ -10,11 +10,28 @@ defmodule Bamboo.Event.Stock do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def new_stock_instance(server \\ __MODULE__) do
+    GenServer.cast(server, :check_new_stock)
+  end
+
+  def get_all_stocks(server \\ __MODULE__) do
+    GenServer.call(server, :get_new_stocks)
+  end
+
   def init(_) do
     Phoenix.PubSub.subscribe(Bamboo.PubSub, @new_list_topic)
 
     schedule_stock_provider()
     {:ok, nil}
+  end
+
+  def handle_cast(:check_new_stock, state) do
+    stocks = StockController.get_new_listed_stocks()
+    {:noreply, %{state: state, stocks: stocks}}
+  end
+
+  def handle_call(:get_new_stocks, _from, state) do
+    {:reply, {:ok, state}, state}
   end
 
   def handle_info(:check_provider, state) do

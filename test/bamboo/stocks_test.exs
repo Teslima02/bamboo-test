@@ -64,6 +64,10 @@ defmodule Bamboo.StocksTest do
   end
 
   describe "stocks" do
+    setup do
+      {:ok, pid} = GenServer.start_link(Bamboo.Event.Stock, %{})
+      {:ok, %{handler: pid}}
+    end
     setup [:setup_category]
     alias Bamboo.Stocks.Stock
 
@@ -143,6 +147,14 @@ defmodule Bamboo.StocksTest do
       Swoosh.Adapters.Test.deliver(sent_email, [])
 
       assert_email_sent(sent_email)
+    end
+
+    test "get listed list stocks from Genserver", %{handler: handler} do
+      assert Bamboo.Event.Stock.new_stock_instance(handler) == :ok
+      {:ok, state} = Bamboo.Event.Stock.get_all_stocks(handler)
+      assert state.stocks |> length == 5
+      IO.inspect :sys.get_state(handler)
+
     end
   end
 end
