@@ -116,23 +116,25 @@ defmodule Bamboo.Stocks do
       [%Stock{}, ...]
 
   """
-  def list_stocks("all") do
-    Repo.all(Stock) |> Repo.preload(:category)
-  end
+  def list_stocks(%{"filter_by" => filter_by}) do
+    case filter_by do
+      "all" ->
+        Repo.all(Stock) |> Repo.preload(:category)
 
-  def list_stocks("new") do
-    # query = from s in Stock, where: s.inserted_at < from_now(2, "week")
-    query = from s in Stock, where: s.inserted_at >= ago(2, "week")
-    Repo.all(query) |> Repo.preload(:category)
-  end
+      "new" ->
+        query = from s in Stock, where: s.inserted_at >= ago(2, "week")
+        Repo.all(query) |> Repo.preload(:category)
 
-  def list_stocks("old") do
-    query = from s in Stock, where: s.inserted_at >= ago(3, "week")
-    Repo.all(query) |> Repo.preload(:category)
+      "old" ->
+        query = from s in Stock, where: s.inserted_at >= ago(3, "week")
+        Repo.all(query) |> Repo.preload(:category)
+
+      _ ->
+        Repo.all(Stock) |> Repo.preload(:category)
+    end
   end
 
   def search_stock(%{"name_search" => name_search} = _params) do
-    IO.inspect name_search
     query = from s in Stock, where: like(s.name, ^"%#{name_search}")
     Repo.all(query) |> Repo.preload(:category)
   end
@@ -166,12 +168,15 @@ defmodule Bamboo.Stocks do
 
   """
   def create_stock(category, attrs \\ %{}) do
-    %Stock{}
-    |> Stock.changeset(attrs)
-    |> Ecto.Changeset.put_assoc(:category, category)
-    |> Repo.insert()
-    |> elem(1)
-    |> get_users_by_stock_category()
+    stock =
+      %Stock{}
+      |> Stock.changeset(attrs)
+      |> Ecto.Changeset.put_assoc(:category, category)
+      |> Repo.insert()
+
+    get_users_by_stock_category(elem(stock, 1))
+
+    stock
   end
 
   @doc """
