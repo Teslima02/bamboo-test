@@ -2,6 +2,7 @@ defmodule Bamboo.StocksTest do
   use Bamboo.DataCase
 
   alias Bamboo.Stocks
+  import Swoosh.TestAssertions
 
   def setup_category(_) do
     category = Bamboo.StocksFixtures.category_fixture()
@@ -66,7 +67,7 @@ defmodule Bamboo.StocksTest do
     setup [:setup_category]
     alias Bamboo.Stocks.Stock
 
-    import Bamboo.StocksFixtures
+    import Bamboo.{StocksFixtures, AccountsFixtures}
 
     @invalid_attrs %{address: nil, country: nil, currency: nil, name: nil, symbol: nil}
 
@@ -132,6 +133,16 @@ defmodule Bamboo.StocksTest do
     test "change_stock/1 returns a stock changeset" do
       stock = stock_fixture()
       assert %Ecto.Changeset{} = Stocks.change_stock(stock)
+    end
+
+    test "send email to user for new listed stocks" do
+      user = user_fixture()
+      stock = stock_fixture()
+
+      sent_email = Bamboo.Email.Email.new_listed_stocks(user, stock)
+      Swoosh.Adapters.Test.deliver(sent_email, [])
+
+      assert_email_sent(sent_email)
     end
   end
 end

@@ -11,7 +11,7 @@ defmodule Bamboo.AccountsFixtures do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        email: "some email",
+        email: "some_email@email.com",
         name: "some name"
       })
       |> Bamboo.Accounts.create_user()

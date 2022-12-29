@@ -5,24 +5,8 @@ defmodule BambooWeb.StockController do
   alias Bamboo.Stocks.Stock
 
   @new_list_topic "new_listed_stocks"
-  def index(conn, %{"filter_by" => filter_by} = _params) do
-    case filter_by do
-      "new" ->
-        stocks = Stocks.list_stocks(filter_by)
-        render(conn, "index.html", stocks: stocks)
-
-      "old" ->
-        stocks = Stocks.list_stocks(filter_by)
-        render(conn, "index.html", stocks: stocks)
-
-      _ ->
-        stocks = Stocks.list_stocks("all")
-        render(conn, "index.html", stocks: stocks)
-    end
-  end
-
-  def index(conn, _params) do
-    stocks = Stocks.list_stocks("all")
+  def index(conn, params) do
+    stocks = Stocks.list_stocks(params)
     render(conn, "index.html", stocks: stocks)
   end
 
